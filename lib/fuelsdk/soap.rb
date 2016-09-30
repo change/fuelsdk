@@ -319,9 +319,42 @@ module FuelSDK
       soap_request :perform, message
     end
 
+    def soap_perform object_type, properties, options = {}
+      message = create_action_message 'Definitions', object_type, properties, 'Start'
+
+      response = soap_request :perform, message
+      if options[:synchronous]
+        task_id = response.raw.body[:perform_response_msg][:results][:result][:task][:id]
+        soap_activity_poll(task_id, options[:polling_interval])
+      end
+      response
+    end
+
     def soap_configure object_type, properties, action
       message = create_action_message 'Configurations', object_type, properties, action
       soap_request :configure, message
+    end
+
+    def soap_activity_poll(task_id, sleep_time)
+      sleep_time ||= 10.0
+      while (true) do
+        response = soap_get(
+          'AsyncActivityStatus',
+          %w(Status StatusMessage StartTime EndTime TaskID ErrorMsg),
+          {
+            'Property' => 'TaskID',
+            'SimpleOperator' => 'equals',
+            'Value' => task_id,
+          }
+        )
+        properties = response.results.first[:properties][:property]
+
+        status = properties.select { |h| h[:name] == 'Status' }.first[:value]
+        message = properties.select { |h| h[:name] == 'StatusMessage' }.first[:value]
+
+        break if status == 'Complete'
+        sleep(sleep_time)
+      end
     end
 
     def create_objects_message object_type, object_properties
@@ -376,12 +409,7 @@ module FuelSDK
       properties = Array.wrap(properties)
       raise 'Object properties must be a Hash' unless properties.first.kind_of? Hash
 
-      if is_a_dataextension? object_type
-        format_dataextension_cud_properties properties
-      else
-        format_object_cud_properties object_type, properties
-      end
-
+      format_object_cud_properties object_type, properties
     end
 
     private
