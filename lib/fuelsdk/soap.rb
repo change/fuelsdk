@@ -324,8 +324,12 @@ module FuelSDK
 
       response = soap_request :perform, message
       if options[:synchronous]
-        task_id = response.raw.body[:perform_response_msg][:results][:result][:task][:id]
-        soap_activity_poll(task_id, options[:polling_interval])
+        begin
+          task_id = response.raw.body[:perform_response_msg][:results][:result][:task][:id]
+          soap_activity_poll(task_id, options[:polling_interval]) if task_id
+        rescue StandardError => exc
+          raise FuelSDK::DescribeError.new(response, exc.message)
+        end
       end
       response
     end
@@ -351,7 +355,9 @@ module FuelSDK
 
         status = properties.select { |h| h[:name] == 'Status' }.first[:value]
         message = properties.select { |h| h[:name] == 'StatusMessage' }.first[:value]
+        err = properties.select { |h| h[:name] == 'ErrorMsg' }.first[:value]
 
+        raise FuelSDK::DescribeError.new(response, "Activity Failure: #{err}") if status == 'FatalError'
         break if status == 'Complete'
         sleep(sleep_time)
       end
