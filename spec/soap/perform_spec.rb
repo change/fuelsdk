@@ -43,11 +43,11 @@ describe FuelSDK::Soap do
 
   describe '#soap_perform' do
     it 'starts a defined query' do
-      subject.should_receive(:create_action_message)
-        .with('Definitions', 'QueryDefinition', [{'ObjectID' => 1}], 'start')
+      expect(subject).to receive(:create_action_message)
+        .with('Definitions', 'QueryDefinition', [{'ObjectID' => 1}], 'Start')
         .and_return 'Do It'
-      subject.should_receive(:soap_request).with(:perform, 'Do It')
-      subject.soap_perform 'QueryDefinition', [{'ObjectID' => 1}], 'start'
+      expect(subject).to receive(:soap_request).with(:perform, 'Do It')
+      subject.soap_perform 'QueryDefinition', [{'ObjectID' => 1}], 'Start'
     end
   end
 end

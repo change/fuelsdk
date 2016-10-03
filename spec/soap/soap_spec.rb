@@ -23,7 +23,7 @@ describe FuelSDK::Soap do
 
   it { should respond_to(:soap_client) }
 
-  its(:debug) { should be_false }
+  its(:debug) { should be false }
   its(:wsdl) { should eq 'https://webservice.exacttarget.com/etframework.wsdl' }
 
   describe '#header' do
@@ -46,7 +46,7 @@ describe FuelSDK::Soap do
 
   describe 'requests' do
     subject {
-      client.stub(:soap_request) do |action, message|
+      allow(client).to receive(:soap_request) do |action, message|
         [action, message]
       end
       client
@@ -59,10 +59,10 @@ describe FuelSDK::Soap do
 
     describe '#soap_post' do
       subject {
-        client.stub(:soap_request) do |action, message|
+        allow(client).to receive(:soap_request) do |action, message|
           [action, message]
         end
-        client.should_receive(:get_editable_properties)
+        expect(client).to receive(:get_editable_properties)
           .and_return(['First Name', 'Last Name', 'Gender'])
         client
       }

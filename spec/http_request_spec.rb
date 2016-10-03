@@ -11,7 +11,7 @@ describe FuelSDK::HTTPRequest do
 
   describe '#get' do
     it 'makes and Net::HTTP::Get request' do
-      client.stub(:request).with(Net::HTTP::Get, 'http://some_url', {}).and_return({'success' => 'get'})
+      allow(client).to receive(:request).with(Net::HTTP::Get, 'http://some_url', {}).and_return({'success' => 'get'})
       expect(client.get('http://some_url')).to eq 'success' => 'get'
     end
   end
@@ -20,13 +20,13 @@ describe FuelSDK::HTTPRequest do
     describe 'makes and Net::HTTP::Post request' do
 
       it 'with only url' do
-        Net::HTTP.any_instance.stub(:request)
-        client.stub(:request).with(Net::HTTP::Post, 'http://some_url', {}).and_return({'success' => 'post'})
+        allow_any_instance_of(Net::HTTP).to receive(:request)
+        allow(client).to receive(:request).with(Net::HTTP::Post, 'http://some_url', {}).and_return({'success' => 'post'})
         expect(client.post('http://some_url')).to eq 'success' => 'post'
       end
 
       it 'with params' do
-        client.stub(:request)
+        allow(client).to receive(:request)
           .with(Net::HTTP::Post, 'http://some_url', {'params' => {'legacy' => 1}})
           .and_return({'success' => 'post'})
         expect(client.post('http://some_url', {'params' => {'legacy' => 1}})).to eq 'success' => 'post'

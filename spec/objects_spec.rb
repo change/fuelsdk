@@ -143,7 +143,7 @@ describe FuelSDK::DataExtension do
 
   describe '#post' do
     subject {
-      object.stub_chain(:client, :soap_post) do |id, properties|
+      allow(object).to receive_message_chain(:client, :soap_post) do |id, properties|
         [id, properties]
       end
 
@@ -304,7 +304,7 @@ describe FuelSDK::DataExtension do
 
   describe '#patch' do
     subject {
-      object.stub_chain(:client, :soap_patch) do |id, properties|
+      allow(object).to receive_message_chain(:client, :soap_patch) do |id, properties|
         [id, properties]
       end
 
@@ -372,11 +372,11 @@ describe FuelSDK::DataExtension::Row do
     end
 
     it 'updates missing' do
-      rsp = mock(FuelSDK::SoapResponse)
-      rsp.stub(:results).and_return([{:name => 'Products', :customer_key => 'ProductsKey'}])
-      rsp.stub(:success?).and_return true
+      rsp = double(FuelSDK::SoapResponse)
+      allow(rsp).to receive(:results).and_return([{:name => 'Products', :customer_key => 'ProductsKey'}])
+      allow(rsp).to receive(:success?).and_return true
 
-      subject.stub_chain(:client,:soap_get).and_return(rsp)
+      allow(subject).to receive_message_chain(:client,:soap_get).and_return(rsp)
       subject.name = 'Not Nil'
 
       # this really wouldn't work this way. name shouldn't be updated since its whats being used for filter,
@@ -389,7 +389,7 @@ describe FuelSDK::DataExtension::Row do
 
   describe '#get' do
     subject {
-      object.stub_chain(:client, :soap_get) do |id, properties, filter|
+      allow(object).to receive_message_chain(:client, :soap_get) do |id, properties, filter|
         [id, properties, filter]
       end
 
@@ -404,7 +404,7 @@ describe FuelSDK::DataExtension::Row do
 
   describe '#post' do
     subject {
-      object.stub_chain(:client, :soap_post) do |id, properties|
+      allow(object).to receive_message_chain(:client, :soap_post) do |id, properties|
         [id, properties]
       end
 
@@ -441,11 +441,11 @@ describe FuelSDK::DataExtension::Row do
     it 'uses name to get customer key for inseration' do
       subject.name = 'Subscribers'
 
-      rsp = mock(FuelSDK::SoapResponse)
-      rsp.stub(:results).and_return([{:name => 'Products', :customer_key => 'ProductsKey'}])
-      rsp.stub(:success?).and_return true
+      rsp = double(FuelSDK::SoapResponse)
+      allow(rsp).to receive(:results).and_return([{:name => 'Products', :customer_key => 'ProductsKey'}])
+      allow(rsp).to receive(:success?).and_return true
 
-      subject.stub_chain(:client, :soap_get).and_return(rsp)
+      allow(subject).to receive_message_chain(:client, :soap_get).and_return(rsp)
       subject.properties = [{'Properties' => {
         'Property' => [{'Name' => 'Name', 'Value' => 'Justin'}]}}]
 

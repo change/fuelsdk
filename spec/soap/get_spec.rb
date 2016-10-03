@@ -8,10 +8,10 @@ describe FuelSDK::Soap do
   describe '#get_all_object_properties' do
 
     it 'returns properties for object_type' do
-      response = mock(FuelSDK::DescribeResponse)
-      response.should_receive(:success?).and_return(true)
+      response = FuelSDK::DescribeResponse
+      expect(response).to receive(:success?).and_return(true)
 
-      subject.should_receive(:soap_describe)
+      expect(subject).to receive(:soap_describe)
         .with('some object')
         .and_return(response)
 
@@ -20,13 +20,13 @@ describe FuelSDK::Soap do
     end
 
     it 'raises an DescribeError when describe is unsuccessful' do
-      response = mock(FuelSDK::DescribeResponse)
-      response.should_receive(:success?).and_return(false)
-      response.stub(:status).and_return('ERROR')
+      rsp = double(FuelSDK::DescribeResponse)
+      expect(rsp).to receive(:success?).and_return(false)
+      allow(rsp).to receive(:status).and_return('ERROR')
 
-      subject.should_receive(:soap_describe)
+      expect(subject).to receive(:soap_describe)
         .with('some object')
-        .and_return(response)
+        .and_return(rsp)
 
       expect { subject.get_all_object_properties('some object') }
         .to raise_error FuelSDK::DescribeError
@@ -35,7 +35,7 @@ describe FuelSDK::Soap do
 
   describe '#normalize_properties_for_retrieve' do
     it 'when properties are nil gets_all_object_properties' do
-      subject.should_receive(:get_retrievable_properties)
+      expect(subject).to receive(:get_retrievable_properties)
         .with('object').and_return('called all')
 
       expect(subject.normalize_properties_for_retrieve('object', nil)).to eq 'called all'
@@ -43,7 +43,7 @@ describe FuelSDK::Soap do
 
     describe 'when properties is a' do
       subject {
-        client.should_not_receive(:get_retrievable_properties)
+        expect(client).to_not receive(:get_retrievable_properties)
         client
       }
 
@@ -113,13 +113,13 @@ describe FuelSDK::Soap do
   describe '#cache_properties' do
     it 'raise an error if properties is not an Array' do
 
-      subject.should_not_receive(:cache)
+      expect(subject).to_not receive(:cache)
       expect { subject.cache_properties :retrievable, 'Subscriber', 'EmailAddress' }
         .to raise_error
     end
 
     it 'caches properties' do
-      subject.should_receive(:cache).and_return({:retrievable => {}})
+      expect(subject).to receive(:cache).and_return({:retrievable => {}})
       expect(subject.cache_properties :retrievable, 'Subscriber', ['EmailAddress'])
         .to eq(['EmailAddress'])
     end
@@ -127,7 +127,7 @@ describe FuelSDK::Soap do
 
   describe '#cached_properties?' do
     it 'returns cached properties' do
-      subject.should_receive(:cache).and_return(
+      expect(subject).to receive(:cache).and_return(
         {
           :retrievable => {
           'Subscriber' => ['EmailAddress']}
@@ -139,7 +139,7 @@ describe FuelSDK::Soap do
     end
 
     it 'returns nil on error access cache' do
-      subject.should_receive(:cache).and_return(1)
+      expect(subject).to receive(:cache).and_return(1)
       expect(subject.cached_properties?(:retrievable, 'Subscriber'))
         .to be_nil
     end
@@ -147,7 +147,7 @@ describe FuelSDK::Soap do
 
   describe '#retrievable_properties_cached?' do
     it 'returns a list of retrievable properties for the object' do
-      subject.should_receive(:cached_properties?)
+      expect(subject).to receive(:cached_properties?)
         .with(:retrievable, 'item')
         .and_return(['prop'])
 
@@ -161,27 +161,27 @@ describe FuelSDK::Soap do
 
   describe '#get_retrievable_properties' do
     it 'returns cached properties' do
-      subject.should_receive(:retrievable_properties_cached?)
+      expect(subject).to receive(:retrievable_properties_cached?)
         .with('object')
         .and_return(['prop'])
 
-      subject.should_not_receive(:get_all_object_properties)
-      subject.should_not_receive(:cache_retrievable)
+      expect(subject).to_not receive(:get_all_object_properties)
+      expect(subject).to_not receive(:cache_retrievable)
 
       expect(subject.get_retrievable_properties('object')).to eq ['prop']
     end
 
     it 'requests and caches properties when not in cache' do
-      subject.should_receive(:retrievable_properties_cached?)
+      expect(subject).to receive(:retrievable_properties_cached?)
         .with('object')
         .and_return(nil)
 
-      response = mock(FuelSDK::DescribeResponse)
-      response.stub(:retrievable).and_return(['prop'])
-      subject.should_receive(:get_all_object_properties)
-        .and_return(response)
+      rsp = double(FuelSDK::DescribeResponse)
+      allow(rsp).to receive(:retrievable).and_return(['prop'])
+      expect(subject).to receive(:get_all_object_properties)
+        .and_return(rsp)
 
-      subject.should_receive(:cache_retrievable)
+      expect(subject).to receive(:cache_retrievable)
         .with('object', ['prop'])
         .and_return(['prop'])
 
@@ -199,16 +199,16 @@ describe FuelSDK::Soap do
   describe '#soap_get' do
     it 'request with message created with normalized properties, filters' do
 
-      subject.should_receive(:normalize_properties_for_retrieve)
+      expect(subject).to receive(:normalize_properties_for_retrieve)
         .with('end to end', nil).and_return([])
 
-      subject.should_receive(:normalize_filter)
+      expect(subject).to receive(:normalize_filter)
         .with(nil).and_return({})
 
-      subject.should_receive(:create_object_type_message)
+      expect(subject).to receive(:create_object_type_message)
         .with('end to end', [], {}).and_return('message')
 
-      subject.should_receive(:soap_request)
+      expect(subject).to receive(:soap_request)
         .with(:retrieve, 'RetrieveRequest' => 'message')
 
       subject.soap_get 'end to end'
@@ -216,13 +216,13 @@ describe FuelSDK::Soap do
 
     it 'request an object without passing properties or a filter' do
 
-      subject.should_receive(:get_retrievable_properties)
+      expect(subject).to receive(:get_retrievable_properties)
         .with('no criteria').and_return(['Props1'])
 
-      subject.should_not_receive(:add_complex_filter_part)
-      subject.should_not_receive(:add_simple_filter_part)
+      expect(subject).to_not receive(:add_complex_filter_part)
+      expect(subject).to_not receive(:add_simple_filter_part)
 
-      subject.should_receive(:soap_request).with(:retrieve, 'RetrieveRequest' => {
+      expect(subject).to receive(:soap_request).with(:retrieve, 'RetrieveRequest' => {
           'ObjectType' => 'no criteria',
           'Properties' => ['Props1']
         }
@@ -233,11 +233,11 @@ describe FuelSDK::Soap do
 
     it 'request an object with limited properties' do
 
-      subject.should_not_receive(:get_retrievable_properties)
-      subject.should_not_receive(:add_complex_fitler_part)
-      subject.should_not_receive(:add_simple_fitler_part)
+      expect(subject).to_not receive(:get_retrievable_properties)
+      expect(subject).to_not receive(:add_complex_fitler_part)
+      expect(subject).to_not receive(:add_simple_fitler_part)
 
-      subject.should_receive(:soap_request).with(:retrieve, 'RetrieveRequest' => {
+      expect(subject).to receive(:soap_request).with(:retrieve, 'RetrieveRequest' => {
           'ObjectType' => 'limited',
           'Properties' => ['Props1']
         }
@@ -247,13 +247,13 @@ describe FuelSDK::Soap do
     end
 
     it 'request an invalid object without properties' do
-      subject.should_receive(:get_retrievable_properties) { raise FuelSDK::DescribeError.new(
+      expect(subject).to receive(:get_retrievable_properties) { raise FuelSDK::DescribeError.new(
           FuelSDK::DescribeResponse.new,  "Unable to get invalid"
         )
       }
 
       rsp = subject.soap_get('invalid')
-      expect(rsp.success?).to be_false
+      expect(rsp.success?).to be false
     end
   end
 

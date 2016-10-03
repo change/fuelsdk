@@ -11,8 +11,8 @@ describe FuelSDK::Soap do
 
   describe '#soap_configure' do
     it 'makes a soap configure request with message' do
-      subject.should_receive(:create_action_message).with('Configurations', 'Subscriber', [], 'Do it').and_return({})
-      subject.should_receive(:soap_request).with(:configure, {})
+      expect(subject).to receive(:create_action_message).with('Configurations', 'Subscriber', [], 'Do it').and_return({})
+      expect(subject).to receive(:soap_request).with(:configure, {})
       subject.soap_configure 'Subscriber', [], 'Do it'
     end
   end

@@ -23,12 +23,12 @@ describe FuelSDK::Client do
 
     it 'with debug=true' do
       client = FuelSDK::Client.new({}, true)
-      expect(client.debug).to be_true
+      expect(client.debug).to be true
     end
 
     it 'with debug=false' do
       client = FuelSDK::Client.new({}, false)
-      expect(client.debug).to be_false
+      expect(client.debug).to be false
     end
 
     it 'creates SoapClient' do
@@ -80,9 +80,9 @@ describe FuelSDK::Client do
     end
 
     it 'debug' do
-      expect(client.debug).to be_false
+      expect(client.debug).to be false
       client.debug = true
-      expect(client.debug).to be_true
+      expect(client.debug).to be true
     end
   end
 
@@ -162,16 +162,16 @@ describe FuelSDK::Client do
     let(:client) { FuelSDK::Client.new }
 
     it 'does nothing if auth_token exists' do
-      client.should_receive(:auth_token).and_return(true)
-      client.should_not_receive(:clear_client!)
+      expect(client).to receive(:auth_token).and_return(true)
+      expect(client).to_not receive(:clear_client!)
       client.refresh
     end
 
     describe 'requests and sets new tokens' do
       subject {
-        client.should_receive(:request_token_data)
-        client.should_receive(:request_token_options).and_return('options')
-        client.should_receive(:post)
+        expect(client).to receive(:request_token_data)
+        expect(client).to receive(:request_token_options).and_return('options')
+        expect(client).to receive(:post)
           .with("https://auth.exacttargetapis.com/v1/requestToken", 'options')
           .and_return 'accessToken' => :access,
             'legacyToken' => :legacy,

@@ -6,7 +6,7 @@ describe FuelSDK::Soap do
 
   describe '#editable_properties_cached?' do
     it 'returns a list of editable properties for the object' do
-      client.should_receive(:cached_properties?)
+      expect(client).to receive(:cached_properties?)
         .with(:editable, 'item')
         .and_return(['prop'])
 
@@ -20,27 +20,27 @@ describe FuelSDK::Soap do
 
   describe '#get_editable_properties' do
     it 'returns cached properties' do
-      client.should_receive(:editable_properties_cached?)
+      expect(client).to receive(:editable_properties_cached?)
         .with('object')
         .and_return(['prop'])
 
-      client.should_not_receive(:get_all_object_properties)
-      client.should_not_receive(:cache_editable)
+      expect(client).to_not receive(:get_all_object_properties)
+      expect(client).to_not receive(:cache_editable)
 
       expect(client.get_editable_properties('object')).to eq ['prop']
     end
 
     it 'requests and caches properties when not in cache' do
-      client.should_receive(:editable_properties_cached?)
+      expect(client).to receive(:editable_properties_cached?)
         .with('object')
         .and_return(nil)
 
       response = double(FuelSDK::DescribeResponse)
-      response.stub(:editable).and_return(['prop'])
-      client.should_receive(:get_all_object_properties)
+      allow(response).to receive(:editable).and_return(['prop'])
+      expect(client).to receive(:get_all_object_properties)
         .and_return(response)
 
-      client.should_receive(:cache_editable)
+      expect(client).to receive(:cache_editable)
         .with('object', ['prop'])
         .and_return(['prop'])
 
@@ -60,7 +60,7 @@ describe FuelSDK::Soap do
     it 'creates soap objects properties hash putting ' \
       'custom attributes into name value pairs' do
 
-      client.should_receive(:get_editable_properties)
+      expect(client).to receive(:get_editable_properties)
         .with('Subscriber')
         .and_return(['FirstName'])
 
@@ -76,7 +76,7 @@ describe FuelSDK::Soap do
     end
 
     it 'converts properties into an array' do
-      client.should_receive(:get_editable_properties)
+      expect(client).to receive(:get_editable_properties)
         .with('Subscriber')
         .and_return(['FirstName'])
 
@@ -123,9 +123,9 @@ describe FuelSDK::Soap do
   describe '#soap_cud' do
     it 'request with message created with normalized properties' do
 
-      client.should_receive(:normalize_properties_for_cud)
-      client.should_receive(:create_objects_message)
-      client.should_receive(:soap_request)
+      expect(client).to receive(:normalize_properties_for_cud)
+      expect(client).to receive(:create_objects_message)
+      expect(client).to receive(:soap_request)
 
       client.send :soap_cud, :post, 'Subscriber', [{'EmailAddress' => 'dev@exacttarget.com'}]
     end

@@ -53,7 +53,7 @@ module FuelSDK
 
     def jwt= encoded_jwt
       raise 'Require app signature to decode JWT' unless self.signature
-      self.decoded_jwt=JWT.decode(encoded_jwt, self.signature, true)
+      self.decoded_jwt=JWT.decode(encoded_jwt, self.signature, true).first
     end
 
     def decoded_jwt= decoded_jwt

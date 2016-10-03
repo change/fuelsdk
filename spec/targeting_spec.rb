@@ -15,8 +15,8 @@ describe FuelSDK::Targeting do
 
   let(:response) {
     rsp = double(FuelSDK::HTTPResponse)
-    rsp.stub(:success?).and_return(true)
-    rsp.stub(:[]).with('url').and_return('S#.authentication.target')
+    allow(rsp).to receive(:success?).and_return(true)
+    allow(rsp).to receive(:[]).with('url').and_return('S#.authentication.target')
     rsp
   }
 
@@ -27,10 +27,10 @@ describe FuelSDK::Targeting do
   describe '#determine_stack' do
     describe 'without auth_token' do
       it 'calls refresh' do
-        client.stub(:refresh) {
+        allow(client).to receive(:refresh) {
           client.instance_variable_set('@auth_token', 'open_sesame')
         }
-        client.stub(:get)
+        allow(client).to receive(:get)
           .with('https://www.exacttargetapis.com/platform/v1/endpoints/soap',
             {'params'=>{'access_token'=>'open_sesame'}})
           .and_return(response)
@@ -39,11 +39,11 @@ describe FuelSDK::Targeting do
 
     describe 'with valid auth_token' do
       before :each do
-        client.should_receive(:auth_token).twice.and_return('open_sesame')
+        expect(client).to receive(:auth_token).twice.and_return('open_sesame')
       end
 
       it 'when successful returns endpoint' do
-        client.stub(:get)
+        allow(client).to receive(:get)
           .with('https://www.exacttargetapis.com/platform/v1/endpoints/soap',
             {'params'=>{'access_token'=>'open_sesame'}})
           .and_return(response)
@@ -51,9 +51,9 @@ describe FuelSDK::Targeting do
       end
 
       it 'raises error on unsuccessful responses' do
-        client.stub(:get).and_return{
+        allow(client).to receive(:get) {
           rsp = double(FuelSDK::HTTPResponse)
-          rsp.stub(:success?).and_return(false)
+          allow(rsp).to receive(:success?).and_return(false)
           rsp
         }
         expect{ client.send(:determine_stack) }.to raise_error 'Unable to determine stack'
@@ -63,7 +63,7 @@ describe FuelSDK::Targeting do
 
   describe '#endpoint' do
     it 'calls determine_stack to find target' do
-      client.should_receive(:determine_stack).and_return('S#.authentication.target')
+      expect(client).to receive(:determine_stack).and_return('S#.authentication.target')
       expect(client.endpoint).to eq 'S#.authentication.target'
     end
   end

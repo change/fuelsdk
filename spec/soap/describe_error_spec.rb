@@ -1,25 +1,22 @@
 require 'spec_helper'
 
 describe FuelSDK::DescribeError do
+  let (:triggering) { FuelSDK::SoapResponse.new }
+  subject { FuelSDK::DescribeError.new(triggering, 'i am an error message') }
 
   it { should respond_to(:response) }
 
-  let (:triggering) { FuelSDK::SoapResponse.new }
-
   it 'has passed message as error' do
-    error = FuelSDK::DescribeError.new(triggering, 'i am an error message')
-    expect(error.message).to eq 'i am an error message'
+    expect(subject.message).to eq 'i am an error message'
   end
 
   it 'triggering response is available' do
-    error = FuelSDK::DescribeError.new(triggering, 'i am an error message')
-    expect(error.response).to eq triggering
+    expect(subject.response).to eq triggering
   end
 
   it 'sets message on response' do
     expect(triggering.message).to be_nil
-    error = FuelSDK::DescribeError.new(triggering, 'i am an error message')
-    expect(triggering.message).to eq 'i am an error message'
+    expect(subject.message).to eq 'i am an error message'
   end
 
 end
