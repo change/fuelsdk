@@ -47,7 +47,7 @@ describe FuelSDK::Soap do
         .with('Definitions', 'QueryDefinition', [{'ObjectID' => 1}], 'Start')
         .and_return 'Do It'
       expect(subject).to receive(:soap_request).with(:perform, 'Do It')
-      subject.soap_perform 'QueryDefinition', [{'ObjectID' => 1}], 'Start'
+      subject.soap_perform 'QueryDefinition', [{'ObjectID' => 1}]
     end
   end
 end

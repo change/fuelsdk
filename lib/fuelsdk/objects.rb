@@ -25,6 +25,12 @@ module FuelSDK
           client.soap_delete id, Array.wrap(properties)
         end
       end
+
+      module Perform
+        def perform options
+          client.soap_perform id, properties, options
+        end
+      end
     end
 
     module Rest
@@ -311,6 +317,18 @@ module FuelSDK
         'https://www.exacttargetapis.com/hub/v1/campaigns/%{id}/assets/%{assetId}'
       end
     end
+  end
+
+  class EmailSendDefinition < Objects::Base
+    include Objects::Soap::Read
+    include Objects::Soap::CUD
+    include Objects::Soap::Perform
+  end
+
+  class QueryDefinition < Objects::Base
+    include Objects::Soap::Read
+    include Objects::Soap::CUD
+    include Objects::Soap::Perform
   end
 
   class Get < Objects::Base
