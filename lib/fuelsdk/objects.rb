@@ -331,6 +331,18 @@ module FuelSDK
     include Objects::Soap::Perform
   end
 
+  class ImportDefinition < Objects::Base
+    include Objects::Soap::Read
+    include Objects::Soap::CUD
+    include Objects::Soap::Perform
+  end
+
+  class Automation < Objects::Base
+    include Objects::Soap::Read
+    include Objects::Soap::CUD
+    include Objects::Soap::Perform
+  end
+
   class Get < Objects::Base
     include Objects::Soap::Read
     attr_accessor :id
