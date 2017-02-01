@@ -1,7 +1,7 @@
 FuelSDK-Ruby
 ============
 
-2014-02-01: Version 0.1.13
+2017-02-01: Version 0.1.13
 ```
   Add support for clearing data extensions
 ```
