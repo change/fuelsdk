@@ -314,13 +314,9 @@ module FuelSDK
       }
     end
 
-    def soap_perform object_type, properties, action
-      message = create_action_message 'Definitions', object_type, properties, action
-      soap_request :perform, message
-    end
-
     def soap_perform object_type, properties, options = {}
-      message = create_action_message 'Definitions', object_type, properties, 'Start'
+      action = options[:action] || 'Start'
+      message = create_action_message 'Definitions', object_type, properties, action
 
       response = soap_request :perform, message
       if options[:synchronous]
