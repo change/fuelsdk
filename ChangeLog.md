@@ -1,6 +1,25 @@
 FuelSDK-Ruby
 ============
 
+2017-02-01: Version 0.1.13
+```
+  Add support for clearing data extensions
+```
+
+2017-01-24: Version 0.1.12
+```
+  Add support for import definitions and automation objects
+```
+2016-10-03: Version 0.1.11
+```
+  Add support for QueryDefinition and EmailSendDefinition
+```
+
+2015-05-02: Version 0.1.10
+```
+  Add activesupport to gemspec
+```
+
 2014-06-23: Version 0.1.9
 ```
   Fix ContinueRequest

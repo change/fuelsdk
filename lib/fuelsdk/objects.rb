@@ -149,6 +149,7 @@ module FuelSDK
   class DataExtension < Objects::Base
     include Objects::Soap::Read
     include Objects::Soap::CUD
+    include Objects::Soap::Perform
     attr_accessor :fields
     alias columns= fields= # backward compatibility
 
