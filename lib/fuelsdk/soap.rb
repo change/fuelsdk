@@ -8,6 +8,12 @@ module FuelSDK
       @response = response
       super message
     end
+
+    def self.wrap_error(response, exc)
+      error = FuelSDK::DescribeError.new(response, exc.message)
+      error.set_backtrace = exc.backtrace
+      error
+    end
   end
 
   class SoapResponse < FuelSDK::Response
@@ -327,8 +333,10 @@ module FuelSDK
         begin
           task_id = response.raw.body[:perform_response_msg][:results][:result][:task][:id]
           soap_activity_poll(task_id, options[:polling_interval]) if task_id
+        rescue FuelSDK::DescribeError => exc
+          raise exc
         rescue StandardError => exc
-          raise FuelSDK::DescribeError.new(response, exc.message)
+          raise FuelSDK::DescribeError.wrap_error(response, exc)
         end
       end
       response
@@ -361,6 +369,8 @@ module FuelSDK
         break if status == 'Complete'
         sleep(sleep_time)
       end
+    rescue StandardError => exc
+      raise FuelSDK::DescribeError.wrap_error(response, exc)
     end
 
     def create_objects_message object_type, object_properties
