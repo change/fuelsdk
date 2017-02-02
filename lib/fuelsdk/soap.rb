@@ -11,7 +11,7 @@ module FuelSDK
 
     def self.wrap_error(response, exc)
       error = FuelSDK::DescribeError.new(response, exc.message)
-      error.set_backtrace = exc.backtrace
+      error.set_backtrace(exc.backtrace)
       error
     end
   end

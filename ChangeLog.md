@@ -1,6 +1,11 @@
 FuelSDK-Ruby
 ============
 
+2017-02-01: Version 0.1.14
+```
+  Add better error handling for activity polling
+```
+
 2017-02-01: Version 0.1.13
 ```
   Add support for clearing data extensions
@@ -10,6 +15,7 @@ FuelSDK-Ruby
 ```
   Add support for import definitions and automation objects
 ```
+
 2016-10-03: Version 0.1.11
 ```
   Add support for QueryDefinition and EmailSendDefinition
