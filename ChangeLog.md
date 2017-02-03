@@ -1,6 +1,11 @@
 FuelSDK-Ruby
 ============
 
+2017-02-03: Version 0.1.15
+```
+  Hotfix for clearing data extensions
+```
+
 2017-02-01: Version 0.1.14
 ```
   Add better error handling for activity polling
