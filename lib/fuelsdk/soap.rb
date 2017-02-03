@@ -437,6 +437,10 @@ module FuelSDK
         retried = false
         begin
           rsp = soap_client.call(action, :message => message)
+          if rsp.to_s =~ /FailedAuthentication/
+            refresh!
+            raise "FailedAuthentication"
+          end
         rescue
           raise if retried
           retried = true
