@@ -158,6 +158,10 @@ module FuelSDK
       super
     end
 
+    def perform options
+      super
+    end
+
     def patch
       munge_fields self.properties
       super
