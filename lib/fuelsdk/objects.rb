@@ -36,21 +36,21 @@ module FuelSDK
     module Rest
       module Read
         def get
-          client.rest_get id, Array.wrap(properties)
+          client.rest_get id, properties
         end
       end
 
       module CUD
         def post
-          client.rest_post id, Array.wrap(properties)
+          client.rest_post id, properties
         end
 
         def patch
-          client.rest_patch id, Array.wrap(properties)
+          client.rest_patch id, properties
         end
 
         def delete
-          client.rest_delete id, Array.wrap(properties)
+          client.rest_delete id, properties
         end
       end
     end
@@ -316,6 +316,38 @@ module FuelSDK
 
       def id
         'https://www.exacttargetapis.com/hub/v1/campaigns/%{id}/assets/%{assetId}'
+      end
+    end
+  end
+
+
+  class ContentBuilder < Objects::Base
+    include Objects::Rest::Read
+    include Objects::Rest::CUD
+
+    def properties
+      @properties ||= {}
+      @properties.merge! 'id' => '' unless @properties.include? 'id'
+      p @properties
+      @properties
+    end
+
+    def id
+      'https://www.exacttargetapis.com/asset/v1/content/assets/%{id}'
+    end
+
+    class Query < Objects::Base
+      include Objects::Rest::CUD
+
+      def properties
+        @properties ||= {}
+        @properties.merge! 'id' => '' unless @properties.include? 'id'
+        p @properties
+        @properties
+      end
+
+      def id
+        'https://www.exacttargetapis.com/asset/v1/content/assets/query'
       end
     end
   end

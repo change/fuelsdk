@@ -17,6 +17,7 @@ module FuelSDK
     end
 
     def get_url_properties url, properties
+      p properties
       url_property_names = url.scan(/(%{(.+?)})/).collect{|frmt, name| name}
       url_properties = {}
       properties.keys.each do |k|
@@ -36,6 +37,7 @@ module FuelSDK
     end
 
     def parse_properties url, properties
+      p properties
       url_properties = get_url_properties url, properties
       url = complete_url url, url_properties
       [url, properties]
@@ -58,6 +60,7 @@ module FuelSDK
     end
 
     def rest_post url, properties={}
+      p properties
       url, payload = parse_properties url, properties
       rest_request :post, url, {'data' => payload,
         'content_type' => 'application/json'}
