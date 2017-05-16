@@ -332,7 +332,7 @@ module FuelSDK
         rescue FuelSDK::DescribeError => exc
           raise exc
         rescue StandardError => exc
-          raise FuelSDK::DescribeError.wrap_error(response, exc)
+          raise FuelSDK::DescribeError.wrap_error(response || FuelSDK::SoapResponse.new, exc)
         end
       end
       response
@@ -365,8 +365,10 @@ module FuelSDK
         break if status == 'Complete'
         sleep(sleep_time)
       end
+    rescue FuelSDK::DescribeError => exc
+      raise exc
     rescue StandardError => exc
-      raise FuelSDK::DescribeError.wrap_error(response, exc)
+      raise FuelSDK::DescribeError.wrap_error(response || FuelSDK::SoapResponse.new, exc)
     end
 
     def create_objects_message object_type, object_properties
