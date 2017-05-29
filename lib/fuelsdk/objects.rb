@@ -328,7 +328,6 @@ module FuelSDK
     def properties
       @properties ||= {}
       @properties.merge! 'id' => '' unless @properties.include? 'id'
-      p @properties
       @properties
     end
 
@@ -342,7 +341,6 @@ module FuelSDK
       def properties
         @properties ||= {}
         @properties.merge! 'id' => '' unless @properties.include? 'id'
-        p @properties
         @properties
       end
 
