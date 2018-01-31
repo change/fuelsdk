@@ -22,8 +22,6 @@ module FuelSDK
       rsp = nil
       if more?
        rsp = unpack @client.soap_client.call(:retrieve, :message => {'RetrieveRequest' => {'ContinueRequest' => request_id}})
-      else
-        puts 'No more data'
       end
 
       rsp
