@@ -146,6 +146,18 @@ module FuelSDK
     end
   end
 
+  class TriggeredSendDefinition < Objects::Base
+    include Objects::Soap::Read
+  end
+
+  class TriggeredSendSummary < Objects::Base
+    include Objects::Soap::Read
+  end
+
+  class Send < Objects::Base
+    include Objects::Soap::Read
+  end
+
   class DataExtension < Objects::Base
     include Objects::Soap::Read
     include Objects::Soap::CUD
